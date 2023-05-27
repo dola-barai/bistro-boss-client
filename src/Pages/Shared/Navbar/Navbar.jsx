@@ -1,22 +1,35 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
+import { FaShoppingCart } from 'react-icons/fa';
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../../providers/AuthProvider";
 
 const Navbar = () => {
-    const {user, logOut } = useContext(AuthContext)
+    const { user, logOut } = useContext(AuthContext)
 
-    const handleLogout= () => {
+    const handleLogout = () => {
         logOut()
-        .then( () => {})
-        .catch(error => console.error(error))
+            .then(() => { })
+            .catch(error => console.error(error))
     }
+
+    useEffect(() => {
+        
+    },[])
     const navOptions = <>
         <li><Link to='/'>Home</Link></li>
         <li><Link to='/menu'>Our Menu</Link></li>
         <li><Link to='/order/Salad'>Order Now</Link></li>
         <li><Link to='/secret'>Secret</Link></li>
+        <li>
+            <Link>
+                <button className="btn gap-2">
+                    <FaShoppingCart></FaShoppingCart>
+                    <div className="badge badge-secondary">+0</div>
+                </button>
+            </Link>
+        </li>
 
-     </>
+    </>
     return (
         <div>
             <div className="navbar fixed z-10 bg-opacity-30 max-w-screen-xl bg-black text-white">
@@ -37,15 +50,15 @@ const Navbar = () => {
                     </ul>
                 </div>
                 <div className="navbar-end">
-                    
-                {
-                    user ? <>
-                    <span>{user?.displayName}</span>
-                    <button onClick={handleLogout} className="btn btn-ghost">Logout</button>
-                    </> : <>
-                    <Link to='/login'>Login</Link>
-                    </>
-                }
+
+                    {
+                        user ? <>
+
+                            <button onClick={handleLogout} className="btn btn-ghost">Logout</button>
+                        </> : <>
+                            <Link to='/login'>Login</Link>
+                        </>
+                    }
                 </div>
             </div>
         </div>

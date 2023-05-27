@@ -38,7 +38,7 @@ const SignUp = () => {
                 console.log(error);
               });
         })
-        .catch(error => console.log(error))
+        .then(error => console.log(error))
     };
 
     return (
