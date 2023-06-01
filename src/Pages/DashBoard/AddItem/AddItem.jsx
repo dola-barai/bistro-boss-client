@@ -1,11 +1,14 @@
 import { Helmet } from "react-helmet-async";
 import SectionTitle from "../../../components/SectionTitle/SectionTitle";
 import { useForm } from 'react-hook-form';
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import Swal from "sweetalert2";
 
 const image_hosting_token = import.meta.env.VITE_Image_Upload_token;
 const AddItem = () => {
-    const { register, handleSubmit, formState: { errors } } = useForm();
-    const image_hosting_url = `https://api.imgbb.com/1/upload?expiration=600&key=${image_hosting_token}`
+    const [axiosSecure] = useAxiosSecure()
+    const { register, handleSubmit, reset } = useForm();
+    const image_hosting_url = `https://api.imgbb.com/1/upload?key=${image_hosting_token}`
     
     const onSubmit = data => {
         const formData = new FormData();
@@ -17,11 +20,30 @@ const AddItem = () => {
         })
         .then(res => res.json())
         .then(imgResponse => {
-            console.log(imgResponse);
+            if(imgResponse.success){
+                const imgURL = imgResponse.data.display_url;
+                const {name, price, category, recipe} = data;
+                const newItem = {name, price: parseFloat(price), category, recipe, image: imgURL}
+                console.log(newItem);
+                
+                axiosSecure.post('/menu', newItem)
+                .then(data => {
+                    console.log('after posting new menu item', data.data);
+                    if(data.data.insertedId){
+                        reset();
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Your menu has been added',
+                            showConfirmButton: false,
+                            timer: 1500
+                          })
+                    }
+                })
+            }
         })
     };
-    console.log(errors);
-    console.log(image_hosting_token);
+
     return (
         <div className="w-full px-10">
             <Helmet>
@@ -63,7 +85,7 @@ const AddItem = () => {
                     <label className="label">
                         <span className="label-text">Recipe Details</span>
                     </label>
-                    <textarea {...register("details", { required: true })} className="textarea textarea-bordered h-24" placeholder="Bio"></textarea>
+                    <textarea {...register("recipe", { required: true })} className="textarea textarea-bordered h-24" placeholder="Bio"></textarea>
                 </div>
                 <div className="form-control w-full mb-4">
                     <label className="label">
