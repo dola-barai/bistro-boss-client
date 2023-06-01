@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react";
 import { FaShoppingCart } from 'react-icons/fa';
 import { Link } from "react-router-dom";
-import { AuthContext } from "../../../providers/AuthProvider";
+import { AuthContext } from "../../../Providers/AuthProvider";
 import useCart from "../../../hooks/useCart";
 
 const Navbar = () => {
